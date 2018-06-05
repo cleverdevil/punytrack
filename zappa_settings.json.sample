@@ -1,0 +1,26 @@
+{
+    "dev": {
+        "app_function": "punytrack.wsgi.app",
+        "aws_region": "us-east-1",
+        "profile_name": "default",
+        "project_name": "punytrack",
+        "runtime": "python3.6",
+        "s3_bucket": "punytrack-zappa-dev",
+        "keep_warm": false
+    },
+    "production": {
+        "app_function": "punytrack.wsgi.app",
+        "aws_region": "us-east-1",
+        "profile_name": "default",
+        "project_name": "punytrack",
+        "runtime": "python3.6",
+        "s3_bucket": "punytrack-zappa-prod",
+        "certificate_arn": "arn:aws:acm:us-east-1:716526941378:certificate/4eadc1e3-46f2-4147-b6a3-a39833e7f216",
+        "domain": "geo.cleverdevil.io",
+        "keep_warm": false,
+        "events": [{
+           "function": "punytrack.functions.daily_rollup",
+           "expression": "cron(1, 0, * * ? *)"
+        }]
+    }
+}
