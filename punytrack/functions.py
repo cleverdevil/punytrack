@@ -21,12 +21,16 @@ query_tmpl = '''
         month = %(month)d
     AND
         day = %(day)d
+    ORDER BY
+        timestamp asc
 '''
 
 output_tmpl = 's3://%(bucket)s/rollups/%(token)s/%(year)d/%(month)d/%(day)d'
 
 
 def rollup_day(token, day, force=False):
+    print('Rollup day: %s-%s-%s (%s)' % (day.year, day.month, day.day, token))
+
     query = query_tmpl % dict(
         token=token,
         year=day.year,
@@ -41,6 +45,9 @@ def rollup_day(token, day, force=False):
         month=day.month,
         day=day.day
     )
+
+    print('Query -> ', query)
+    print('Output -> ', output_location)
 
     if force:
         response = s3.list_objects_v2(
@@ -69,6 +76,8 @@ def rollup_day(token, day, force=False):
             'OutputLocation': output_location
         }
     )
+
+    print('Execution scheduled with ID -> ', response['QueryExecutionId'])
 
 
 def daily_rollup(event, context):
