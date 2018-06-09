@@ -90,4 +90,18 @@ def daily_rollup(event, context):
     yesterday = today - timedelta(days=1)
 
     for token in conf['tokens']:
-        rollup_day(token, yesterday)
+        rollup_day(token, yesterday, force=True)
+
+
+def daily_prerollup(event, context):
+    '''
+    This function will be called at noon UTC on a daily basis. It will
+    run the rollup operation for the current day, so that data is available
+    even though the day isn't over yet.
+    '''
+
+    today = datetime.utcnow()
+
+    for token in conf['tokens']:
+        rollup_day(token, today, force=False)
+

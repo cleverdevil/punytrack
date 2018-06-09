@@ -1,5 +1,5 @@
 from dateutil.parser import parse
-from datetime import datetime
+from datetime import datetime, timedelta
 from pecan import conf
 from io import StringIO
 
@@ -106,8 +106,38 @@ def get_day(token, day):
                         response['Body'].read().decode('utf-8')
                     )
                 )
-                return [
-                    line for line in reader
-                ]
+                return [{
+                    'timestamp': line['timestamp'],
+                    'year': int(line['year']),
+                    'month': int(line['month']),
+                    'day': int(line['day']),
+                    'hour': int(line['hour']),
+                    'minute': int(line['minute']),
+                    'battery_level': float(line['battery_level']),
+                    'battery_state': line['battery_state'],
+                    'motion': line['motion'],
+                    'wifi': line['wifi'],
+                    'x': float(line['x']),
+                    'y': float(line['y']),
+                    'altitude': int(line['altitude']),
+                    'speed': line['speed']
+                } for line in reader]
 
     return []
+
+
+def get_range(token, start, end):
+    data = []
+    for i in range((end - start).days):
+        data += get_day(token, start.date() + timedelta(days=i))
+
+    start = start.isoformat()
+    end = end.isoformat()
+
+    return [
+        point for point in data
+        if
+            point['timestamp'] >= start
+        and
+            point['timestamp'] <= end
+    ]
