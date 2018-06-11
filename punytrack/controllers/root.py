@@ -2,7 +2,7 @@ from pecan import expose, request, redirect, abort
 from pecan.hooks import HookController, PecanHook
 from datetime import date, timedelta
 from dateutil.parser import parse
-from dateutil.tz import gettz, tzutc
+from pytz import utc, timezone
 
 from .. import storage
 
@@ -39,14 +39,19 @@ class APIController(HookController):
 
     @expose('json')
     def range(self, token, tz='US/Pacific', start=None, duration=24):
-        timezone = gettz(tz)
-        start = parse(start).astimezone(timezone).astimezone(tzutc())
+        zone = timezone(tz)
+
+        print('~' * 80)
+        print(zone)
+        print('~' * 80)
+
+        start = zone.localize(parse(start)).astimezone(utc)
         end = start + timedelta(hours=int(duration))
 
+        print('=' * 80)
         print('Start: ', start.isoformat())
         print('End: ', end.isoformat())
-        print('Start (local): ', start.astimezone(timezone).isoformat())
-        print('End (local): ', end.astimezone(timezone).isoformat())
+        print('=' * 80)
 
         return storage.get_range(token=token, start=start, end=end)
 

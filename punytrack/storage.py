@@ -128,16 +128,13 @@ def get_day(token, day):
 
 def get_range(token, start, end):
     data = []
-    for i in range((end - start).days):
+    for i in range((end - start).days + 1):
         data += get_day(token, start.date() + timedelta(days=i))
-
-    start = start.isoformat()
-    end = end.isoformat()
 
     return [
         point for point in data
         if
-            point['timestamp'] >= start
+            parse(point['timestamp']) >= start
         and
-            point['timestamp'] <= end
+            parse(point['timestamp']) <= end
     ]
