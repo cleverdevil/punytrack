@@ -15,7 +15,8 @@ setup(
     install_requires=[
         "pecan",
         "zappa",
-        "requests"
+        "requests",
+        "pytz"
     ],
     test_suite='punytrack',
     zip_safe=False,
