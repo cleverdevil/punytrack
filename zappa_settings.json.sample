@@ -14,13 +14,26 @@
         "profile_name": "default",
         "project_name": "punytrack",
         "runtime": "python3.6",
-        "s3_bucket": "punytrack-zappa-prod",
-        "certificate_arn": "arn:aws:acm:us-east-1:716526941378:certificate/4eadc1e3-46f2-4147-b6a3-a39833e7f216",
-        "domain": "geo.cleverdevil.io",
+        "s3_bucket": "punytrack-zappa-your-bucket-here",
+        "certificate_arn": "arn:aws:acm:us-east-1:XXXXXXXXXXXX:certificate/XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+        "domain": "xxx.xxxxxxxxxxx.xx",
         "keep_warm": false,
         "events": [{
            "function": "punytrack.functions.daily_rollup",
-           "expression": "cron(1, 0, * * ? *)"
-        }]
+           "expression": "cron(1 0 * * ? *)"
+        }, {
+            "function": "punytrack.functions.daily_prerollup",
+            "expression": "cron(0 12 * * ? *)"
+        }],
+        "extra_permissions": [{
+            "Effect": "Allow",
+            "Action": ["athena:*"],
+            "Resource": "*"
+        }, {
+            "Effect": "Allow",
+            "Action": ["glue:*"],
+            "Resource": "*"
+        }],
+        "binary_support": false
     }
 }
